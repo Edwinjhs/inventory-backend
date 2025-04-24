@@ -31,7 +31,9 @@ export const register = async (req, res) => {
 		res.status(500).json({ error: error.message });
 	}
 };
-
+export const test = async (req, res) => {
+	console.log("prueba")
+}
 export const login = async (req, res) => {
 	const { email, password } = req.body;
 
