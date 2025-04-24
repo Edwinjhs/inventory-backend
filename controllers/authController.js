@@ -42,9 +42,8 @@ export const test = async (req, res) => {
 	console.log("prueba")
 }
 export const login = async (req, res) => {
-	const { email, password } = req.body;
-
 	try {
+		const { email, password } = req.body;
 		const user = await User.findOne({ email });
 		if (!user) {
 			return res.status(401).json({ error: "Credenciales inválidas" });
@@ -61,7 +60,13 @@ export const login = async (req, res) => {
 			{ expiresIn: "1h" }
 		);
 
-		res.json({ token, userId: user._id, role: user.role });
+		res.json({
+			token,
+			userId: user._id,
+			email: user.email, // <- Añadir
+			role: user.role, // <- Añadir
+			country: user.country, // <- Añadir
+		});
 	} catch (error) {
 		console.error("Error en registro:", error); // Log detallado
     res.status(500).json({ error: error.message });
