@@ -1,12 +1,28 @@
-const warehouseSchema = new mongoose.Schema({
-	name: { type: String, required: true },
-	country: { type: String, required: true },
-	products: [
-		{
-			productId: { type: String, required: true },
-			quantity: { type: Number, required: true },
-			lastUpdated: { type: Date, default: Date.now },
-		},
-	],
-	admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-});
+import { Router } from "express";
+import {
+	getWarehouses,
+	createWarehouse,
+} from "../controllers/warehouseController.js";
+import { requireAuth, requireRole } from "../middlewares/auth.js";
+
+const router = Router();
+
+// Ruta solo para admins
+router.get(
+	"/admin/warehouses",
+	requireAuth,
+	requireRole("admin"),
+	getWarehouses
+);
+
+// Ruta para usuarios país
+router.get(
+	"/warehouses",
+	requireAuth,
+	(req, res, next) => {
+		if (req.user.role !== "country")
+			return res.status(403).json({ error: "Acceso denegado" });
+		next();
+	},
+	getWarehousesByCountry
+);

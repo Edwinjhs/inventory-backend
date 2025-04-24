@@ -5,7 +5,12 @@ import bcrypt from "bcryptjs";
 
 export const register = async (req, res) => {
 	try {
-		const { email, password, role, country } = req.body;
+		const { email, password, role, country} = req.body;
+		    if (!email || !password) {
+					return res
+						.status(400)
+						.json({ error: "Email y contraseña son requeridos" });
+				}
 
 		// Validación de usuario existente
 		const existingUser = await User.findOne({ email });
@@ -58,6 +63,7 @@ export const login = async (req, res) => {
 
 		res.json({ token, userId: user._id, role: user.role });
 	} catch (error) {
-		res.status(500).json({ error: error.message });
+		console.error("Error en registro:", error); // Log detallado
+    res.status(500).json({ error: error.message });
 	}
 };
