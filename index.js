@@ -9,17 +9,27 @@ dotenv.config();
 const app = express();
 
 // Configuración única de CORS
+const whitelist = [
+	"http://localhost:5173", // desarrollo local
+	"https://arelatam.netlify.app", // tu dominio real en Netlify
+];
+
 const corsOptions = {
-	origin: [
-		"http://localhost:5173", // dev local
-		"https://tu-frontend.onrender.com", // producción
-	],
+	origin(origin, callback) {
+		// Permite peticiones sin encabezado Origin (p.ej. Postman)
+		if (!origin || whitelist.includes(origin)) {
+			callback(null, true);
+		} else {
+			callback(new Error("No permitido por CORS"));
+		}
+	},
 	methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 	allowedHeaders: ["Content-Type", "Authorization"],
 	credentials: true,
 };
-app.use(cors(corsOptions));                  // Aplica CORS a todas las rutas
-app.options('*', cors(corsOptions)); 
+
+app.use(cors(corsOptions)); // Usa CORS en todas las rutas
+app.options("*", cors(corsOptions));
 app.use(express.json());
 
 // Conectar a MongoDB
