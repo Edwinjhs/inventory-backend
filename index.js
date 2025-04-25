@@ -9,13 +9,17 @@ dotenv.config();
 const app = express();
 
 // Configuración única de CORS
-app.use(cors({
-  origin: "http://localhost:5173",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-}));
-
+const corsOptions = {
+	origin: [
+		"http://localhost:5173", // dev local
+		"https://tu-frontend.onrender.com", // producción
+	],
+	methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+	allowedHeaders: ["Content-Type", "Authorization"],
+	credentials: true,
+};
+app.use(cors(corsOptions));                  // Aplica CORS a todas las rutas
+app.options('*', cors(corsOptions)); 
 app.use(express.json());
 
 // Conectar a MongoDB
