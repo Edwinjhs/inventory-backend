@@ -29,7 +29,6 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions)); // Usa CORS en todas las rutas
-app.options("*", cors(corsOptions));
 app.use(express.json());
 
 // Conectar a MongoDB
